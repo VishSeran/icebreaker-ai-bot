@@ -16,7 +16,8 @@ TOP_K = 50
 TOP_P = 1
 
 # Node settings
-CHUNK_SIZE = 500
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
 
 # LLM prompt templates
 INITIAL_FACTS_TEMPLATE = """
