@@ -40,11 +40,36 @@ def data_extraction(linkedIn_url:str,
             }
             
             logger.info(f"Sending API request to fetch the profile details")
-            
             response = requests.get(api_endpoint, headers=headers, params=params)
             
-        
-        return response
+        if response.status_code == 200:
+            
+            try:
+                data = response.json()
+                    
+                #data cleaning
+                data = {
+                    k:v for k,v in data.items()
+                    if v not in ([], "", None) or k not in ["people _also_viewd", "certification"] 
+                }
+                
+                #remove profile pic
+                if data.get("groups"):
+                    for data_group in data.get("groups"):
+                        data_group.pop("profilePicture", None)
+            
+                return data
+
+            except ValueError as e:
+                logger.error(f"Error JSON parsing: {e}")
+                logger.error(f"Response content: {response.text[:200]}...")
+                print(f"Value error: {e}")
+                return {}
+            
+        else:
+            logger.error(f"Failed to retrieve data. Status code: {response.status_code}")
+            logger.error(f"Response: {response.text}")
+            return {}
         
     except ValueError as e:
         print(f"Value error: {e}")
