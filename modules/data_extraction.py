@@ -1,4 +1,3 @@
-
 from typing import Any, Optional
 import requests
 from modules.config import MOCK_DATA_URL
@@ -72,9 +71,11 @@ def data_extraction(linkedIn_url:str,
             return {}
         
     except ValueError as e:
+        logger.error(f"Failed to conncet using api key: {e}")
         print(f"Value error: {e}")
         return {}
     
     except Exception as e:
+        logger.error(f"Failed to load data: {e}")
         print(f"Unknown error: {e}")
         return {}
