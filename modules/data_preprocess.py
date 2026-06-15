@@ -1,12 +1,13 @@
-from typing import Any
+from typing import Any, Optional
 from llama_index.core import Document
 from llama_index.core.node_parser import SentenceSplitter
 import json
-from modules.config import CHUNK_SIZE, CHUNK_OVERLAP
+from modules.config import CHUNK_SIZE, CHUNK_OVERLAP, EMBEDDING_MODEL_ID
 from logging import Logger
 from llama_index.core.storage.storage_context import StorageContext
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 import chromadb
 
 logger = Logger(name="logger")
@@ -30,7 +31,7 @@ def split_json_data(profile_json:dict[str,Any])-> list:
         return []
         
     
-def create_vector_database(nodes:List) -> Optional[VectorStoreIndex]:
+def create_vector_database(nodes:list) -> Optional[VectorStoreIndex]:
       
     try:
         
@@ -42,6 +43,15 @@ def create_vector_database(nodes:List) -> Optional[VectorStoreIndex]:
         
         storage_context = StorageContext.from_defaults(
             vector_store=vector_store
+        )
+        
+        embed_model = HuggingFaceEmbedding(
+            model=EMBEDDING_MODEL_ID
+        )
+        index = VectorStoreIndex(
+            nodes=nodes,
+            embed_model=embed_model,
+            storage_context=storage_context
         )
     except Exception as e:
         print(f"Unknown error: {e}")
