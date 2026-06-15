@@ -57,7 +57,7 @@ def data_extraction(linkedIn_url:str,
                 if data.get("groups"):
                     for data_group in data.get("groups"):
                         data_group.pop("profilePicture", None)
-            
+                logger.info(f"filtered data fetched with in {time.time()-start_time}s")
                 return data
 
             except ValueError as e:
