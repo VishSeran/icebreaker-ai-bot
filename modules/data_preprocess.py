@@ -53,5 +53,41 @@ def create_vector_database(nodes:list) -> Optional[VectorStoreIndex]:
             embed_model=embed_model,
             storage_context=storage_context
         )
+        
+        logger.info("Creating vector index and returned")
+        return index
     except Exception as e:
         print(f"Unknown error: {e}")
+        logger.error("an error while creating vector index")
+        return None
+    
+
+def verify_verctor_database(index:VectorStoreIndex) -> bool:
+    
+    try:
+        
+        vector_store = index.storage_context.vector_store
+        node_ids = list(index.index_struct.nodes_dict.keys())
+        missing = []
+        
+        
+        for node_id in node_ids:
+            vector_embedding = vector_store.get_nodes(node_ids=[node_id])[0].get_embedding()
+            
+            if vector_embedding is None or len(vector_embedding) == 0:
+                logger.warning(f"the node id {node_id} has none embedding")
+                missing.append(node_id)
+            
+            else:
+                logger.debug(f"node id: {node_id} has a embedding")
+ 
+        if missing:
+            logger.warning("some ids have none or empty embeddings")
+            return False
+        else:
+            logger.debug("all the nodes have proper embedding values")
+            return True
+        
+    except Exception as e:
+        print(f"Error verifying embeddings: {e}")
+        return False
