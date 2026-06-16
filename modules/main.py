@@ -111,9 +111,22 @@ def gradio_interface():
     
     with gr.Blocks(title="LinedIn Icebraker Bot") as demo:
         
-        gr.Markdown("# LinkedIn Icebreaker bot welconme")
+        gr.Markdown("# LinkedIn Icebreaker bot welcome")
         
-        #with gr.Tab("Process LinkedIn Profile"):
+        with gr.Tab("Process LinkedIn Profile"):
+            with gr.Row():
+                with gr.Column():
+                    linkedin_url = gr.Textbox(
+                        label="LinedIn Profile URL",
+                        placeholder="https://www.linkedin.com/in/username/"
+                    )
+                    
+                    api_key = gr.Textbox(
+                        label="enter your api key (leave empty for mock test)",
+                        placeholder="Your ProxyCurl API Key",
+                        type="password",
+                        
+                    )
             
     return demo  
         
