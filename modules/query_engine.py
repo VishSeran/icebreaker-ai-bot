@@ -1,9 +1,9 @@
 from llama_index.core import VectorStoreIndex
-from logging import Logger
+from modules.logger import get_logger
 from modules.config import SIMILARITY_TOP_K, USER_QUESTION_TEMPLATE
 from llama_index.core.prompts import PromptTemplate
 
-logger = Logger("logger")
+logger = get_logger("query_engine_logger")
 
 def init_query_engine(index:VectorStoreIndex, llm_model):
     

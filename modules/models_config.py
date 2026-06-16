@@ -1,9 +1,9 @@
 from modules.config import LLM_MODEL_ID, EMBEDDING_MODEL_ID
-from logging import Logger
+from modules.logger import get_logger
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-logger = Logger("logger")
+logger = get_logger("model_config_logger")
 
 
 def embedding_model(model_name: str = EMBEDDING_MODEL_ID):
