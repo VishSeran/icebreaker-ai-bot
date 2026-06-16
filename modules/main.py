@@ -7,6 +7,7 @@ from modules.data_preprocess import (
 )
 from modules.query_engine import init_query_engine, answer_user_query
 from modules.logger import get_logger
+import gradio
 
 logger = get_logger("main_logger")
 
@@ -89,5 +90,10 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str)
     except Exception as e:
         logger.error(f"Error while fetching process: {e}")
         return None
+    
+def gradio_interface():
+    
+    with
+        
     
 
