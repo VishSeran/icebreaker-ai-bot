@@ -7,10 +7,15 @@ from modules.data_preprocess import (
 )
 from modules.query_engine import init_query_engine
 from modules.logger import get_logger
+from llama_index.core.prompts import PromptTemplate
+from modules.config import USER_QUESTION_TEMPLATE,SIMILARITY_TOP_K
 import gradio as gr
 
 logger = get_logger("main_logger")
+
 global_query_engine = None
+global_llm_model = None
+global_index = None
 
 def process_linkedin(linkedin_url, api_key: str, mock_use: bool):
     
@@ -36,6 +41,8 @@ def process_linkedin(linkedin_url, api_key: str, mock_use: bool):
             raise ValueError("error while creating llm model")
 
         logger.info("llm model created")
+        
+        global_llm_model = llm_model
 
         embed_model = embedding_model()
         if not embed_model:
@@ -54,6 +61,8 @@ def process_linkedin(linkedin_url, api_key: str, mock_use: bool):
 
         if not index:
             raise ValueError("index is not founnd")
+        
+        global_index = index
 
         logger.info("index is created")
         logger.info("index verification started")
@@ -93,10 +102,21 @@ def answer_user_query(user_query:str):
         if not user_query:
             raise ValueError("user query is empty or none")
         
-        if global_query_engine is None:
-            raise ValueError("System not initialized. Please load LinkedIn profile first.")
         
-        answer = global_query_engine.query(user_query)
+        
+        if not USER_QUESTION_TEMPLATE:
+            raise ValueError ("User query prompt template is empty or none")
+        
+        prompt_template = PromptTemplate(template=USER_QUESTION_TEMPLATE)
+        
+        query_engine = global_index.as_query_engine(
+            llm=global_llm_model,
+            streaming=False,
+            similarity_top_k=SIMILARITY_TOP_K,
+            text_qa_template=prompt_template
+        )
+        
+        answer = query_engine.query(user_query)
         logger.info("answer fetched sucessfull")
         return answer
     
@@ -112,7 +132,7 @@ def gradio_interface():
     
     with gr.Blocks(title="LinedIn Icebraker Bot") as demo:
         
-        gr.Markdown("# LinkedIn Icebreaker bot welcome")
+        gr.Markdown("# LinedIn Icebraker Bot")
         
         with gr.Tab("Process LinkedIn Profile"):
             with gr.Row():
@@ -142,10 +162,30 @@ def gradio_interface():
                     inputs=[linkedin_url, api_key, mock_use],
                     outputs=[result_txt]
                 )
-                    
-                    
-                    
+        
+        with gr.Tab(label="Chat with Bot"):
+            gr.Markdown("# Chat with the processed LinkedIn profile")
             
+            chatbot = gr.Chatbot(height=600)
+            chat_input = gr.Textbox(
+                label="Ask question about the profile",
+                placeholder="What is this person's current job title?"
+            )
+            
+            chat_btn = gr.Button("Send")
+            
+            chat_btn.click(
+                fn= answer_user_query,
+                inputs=[chat_input,chatbot],
+                outputs=[chatbot]
+            )
+            
+            chat_input.submit(
+                fn=answer_user_query,
+                inputs=[chat_input,chatbot],
+                outputs=[chatbot]
+            )
+                
     return demo  
         
     

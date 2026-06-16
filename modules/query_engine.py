@@ -1,6 +1,6 @@
 from llama_index.core import VectorStoreIndex
 from modules.logger import get_logger
-from modules.config import SIMILARITY_TOP_K, USER_QUESTION_TEMPLATE
+from modules.config import SIMILARITY_TOP_K, USER_QUESTION_TEMPLATE,INITIAL_FACTS_TEMPLATE
 from llama_index.core.prompts import PromptTemplate
 
 logger = get_logger("query_engine_logger")
@@ -11,7 +11,7 @@ def init_query_engine(index:VectorStoreIndex, llm_model):
         if not USER_QUESTION_TEMPLATE:
             raise ValueError ("User query prompt template is empty or none")
         
-        prompt_template = PromptTemplate(template=USER_QUESTION_TEMPLATE)
+        prompt_template = PromptTemplate(template=INITIAL_FACTS_TEMPLATE)
         
         query_engine = index.as_query_engine(
             llm=llm_model,
