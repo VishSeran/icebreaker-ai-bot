@@ -7,7 +7,7 @@ from modules.data_preprocess import (
 )
 from modules.query_engine import init_query_engine, answer_user_query
 from modules.logger import get_logger
-import gradio
+import gradio as gr
 
 logger = get_logger("main_logger")
 
@@ -93,7 +93,15 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str)
     
 def gradio_interface():
     
-    with
+    with gr.Blocks(title="LinedIn Icebraker Bot") as demo:
+        
+        gr.Markdown("# LinkedIn Icebreaker bot")
+        
+        # with gr.Tab("Process LinkedIn Profile"):
+    return demo  
         
     
 
+if __name__ == "__main__":
+    demo= gradio_interface()
+    demo.launch()
