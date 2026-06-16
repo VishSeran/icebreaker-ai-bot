@@ -1,6 +1,5 @@
 from llama_index.core import VectorStoreIndex
 from logging import Logger
-from modules.models_config import init_llm_model
 from modules.config import SIMILARITY_TOP_K, USER_QUESTION_TEMPLATE
 from llama_index.core.prompts import PromptTemplate
 
@@ -38,12 +37,13 @@ def answer_user_query(user_query:str, query_engine):
         if not user_query:
             raise ValueError("user query is empty or none")
         
-        answer = query_engine(user_query)
+        answer = query_engine.query(user_query)
         logger.info("answer fetched sucessfull")
         return answer
     
     except ValueError as e:
         logger.error(f"Value error:{e}")
+        return None
         
     except Exception as e:
         logger.error(f"Error while answering to user query: {e}")
