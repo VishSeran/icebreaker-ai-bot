@@ -8,11 +8,11 @@ EMBEDDING_MODEL_ID = "BAAI/bge-m3"
 MOCK_DATA_URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/ZRe59Y_NJyn3hZgnF1iFYA/linkedin-profile-data.json"
 
 # Query settings
-SIMILARITY_TOP_K = 5
+SIMILARITY_TOP_K = 2
 TEMPERATURE = 0.0
 MAX_NEW_TOKENS = 500
 MIN_NEW_TOKENS = 1
-TOP_K = 50
+TOP_K = 1
 TOP_P = 1
 
 # Node settings
@@ -29,7 +29,8 @@ Context information is below:
 
 Based on the context provided, list 3 interesting facts about this person's career or education.
 
-Answer in detail, using only the information provided in the context.
+Answer in detail, using only the information provided in the context. 
+Do NOT repeat the same sentence.
 """
 
 USER_QUESTION_TEMPLATE = """
