@@ -1,20 +1,34 @@
-from typing import Optional
 from llama_index.core import VectorStoreIndex
 from logging import Logger
-from modules.data_preprocess import create_vector_database
-from modules.models_config import llm_model
+from modules.models_config import init_llm_model
+from modules.config import SIMILARITY_TOP_K, USER_QUESTION_TEMPLATE
+from llama_index.core.prompts import PromptTemplate
 
 logger = Logger("logger")
 
-
+llm_model = init_llm_model() 
 
 def query_engine(index:VectorStoreIndex):
     
     try:
-        query_engine = index.as_query_engine(
-            
-        )
+        if not USER_QUESTION_TEMPLATE:
+            raise ValueError ("User query prompt template is empty or none")
         
+        prompt_template = PromptTemplate(template=USER_QUESTION_TEMPLATE)
+        
+        query_engine = index.as_query_engine(
+            llm=llm_model,
+            streaming=False,
+            similarity_top_k=SIMILARITY_TOP_K,
+            text_qa_template=prompt_template
+        )
+        logger.info("Launch the query engine")
+        return query_engine
+    
+    except ValueError as e:
+        logger.error(f"Value error: {e}")
+        return None
+    
     except Exception as e:
         logger.error(f"Error while launching query engine: {e}")        
         return None

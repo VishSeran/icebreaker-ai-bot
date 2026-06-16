@@ -36,7 +36,7 @@ def data_extraction(
                 "personal_contact_number": "include",
             }
 
-            logger.info(f"Sending API request to fetch the profile details")
+            logger.info("Sending API request to fetch the profile details")
             response = requests.get(api_endpoint, headers=headers, params=params)
 
         if response.status_code == 200:

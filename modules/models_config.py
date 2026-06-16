@@ -25,7 +25,7 @@ def embedding_model(model_name: str = EMBEDDING_MODEL_ID):
         return None
 
 
-def llm_model(model_name: str = LLM_MODEL_ID):
+def init_llm_model(model_name: str = LLM_MODEL_ID):
 
     try:
         if not model_name:
