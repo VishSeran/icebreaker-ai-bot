@@ -5,6 +5,7 @@ from modules.data_preprocess import (
     create_vector_database,
     verify_verctor_database,
 )
+from modules.query_engine import init_query_engine, answer_user_query
 from modules.logger import get_logger
 
 logger = get_logger("main_logger")
@@ -61,7 +62,15 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
             logger.info("verification sucessfull")
         else:
             logger.warning("verification failed")
-            
+        
+        query_engine = init_query_engine(index,llm_model)
+        
+        if not query_engine:
+            raise ValueError("Query engine is not found")
+        
+        logger.info("query engine created")
+        
+         
             
 
     except ValueError as e:
