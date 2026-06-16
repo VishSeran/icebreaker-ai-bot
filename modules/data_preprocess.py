@@ -32,7 +32,7 @@ def split_json_data(profile_json: dict[str, Any]) -> list:
         return []
 
 
-def create_vector_database(nodes: list) -> Optional[VectorStoreIndex]:
+def create_vector_database(nodes: list, embed_model) -> Optional[VectorStoreIndex]:
 
     try:
         db = chromadb.PersistentClient(path="chroma_db_linkedin")
