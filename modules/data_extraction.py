@@ -2,9 +2,9 @@ from typing import Any, Optional
 import requests
 from modules.config import MOCK_DATA_URL
 import time
-from logging import Logger
+from modules.logger import get_logger
 
-logger = Logger(name="logger")
+logger = get_logger(name="data_extraction_logger")
 
 
 def data_extraction(
@@ -36,7 +36,7 @@ def data_extraction(
                 "personal_contact_number": "include",
             }
 
-            logger.info(f"Sending API request to fetch the profile details")
+            logger.info("Sending API request to fetch the profile details")
             response = requests.get(api_endpoint, headers=headers, params=params)
 
         if response.status_code == 200:

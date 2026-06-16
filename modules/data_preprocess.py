@@ -4,14 +4,14 @@ from llama_index.core.node_parser import SentenceSplitter
 import json
 from modules.config import CHUNK_SIZE, CHUNK_OVERLAP
 from modules.models_config import embedding_model
-from logging import Logger
+from modules.logger import get_logger
 from llama_index.core.storage.storage_context import StorageContext
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import VectorStoreIndex
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 import chromadb
 
-logger = Logger(name="logger")
+logger = get_logger(name="data_preprocess_logger")
+embed_model = embedding_model()
 
 
 def split_json_data(profile_json: dict[str, Any]) -> list:
@@ -42,9 +42,7 @@ def create_vector_database(nodes: list) -> Optional[VectorStoreIndex]:
         )
 
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        
-        embed_model = embedding_model()
-        
+
         logger.info("embeddig model is created")
         index = VectorStoreIndex(
             nodes=nodes, embed_model=embed_model, storage_context=storage_context
