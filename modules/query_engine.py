@@ -6,9 +6,7 @@ from llama_index.core.prompts import PromptTemplate
 
 logger = Logger("logger")
 
-llm_model = init_llm_model() 
-
-def query_engine(index:VectorStoreIndex):
+def init_query_engine(index:VectorStoreIndex, llm_model):
     
     try:
         if not USER_QUESTION_TEMPLATE:
@@ -31,4 +29,14 @@ def query_engine(index:VectorStoreIndex):
     
     except Exception as e:
         logger.error(f"Error while launching query engine: {e}")        
+        return None
+
+  
+def answer_user_query(user_query:str, query_engine:init_query_engine):
+    
+    try:
+        
+        
+    except Exception as e:
+        logger.error("Error while answering to user query")
         return None
