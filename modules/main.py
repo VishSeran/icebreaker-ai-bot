@@ -11,7 +11,7 @@ from modules.logger import get_logger
 logger = get_logger("main_logger")
 
 
-def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
+def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str):
 
     try:
         if mock_use or not api_key or not linkedin_url:
@@ -70,9 +70,18 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
         
         logger.info("query engine created")
         
-         
-            
-
+        query = "Provide three interesting facts about this person\'s career"
+        response = query_engine.query(query)
+        print(response)
+        
+        answer = answer_user_query(user_query,query_engine)
+        if not answer:
+            raise ValueError("answer is not found")
+        
+        logger.info("answer fetched")
+        
+        return answer
+        
     except ValueError as e:
         logger.error(f"Value error: {e}")
         return None
@@ -80,3 +89,5 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
     except Exception as e:
         logger.error(f"Error while fetching process: {e}")
         return None
+    
+
