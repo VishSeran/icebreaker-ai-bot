@@ -1,7 +1,7 @@
 """Configuration settings for the Icebreaker Bot."""
 
 # Model settings
-LLM_MODEL_ID = "meta-llama/llama-3-3-70b-instruct"
+LLM_MODEL_ID = "meta-llama/Llama-3.2-1B-Instruct"
 EMBEDDING_MODEL_ID = "BAAI/bge-m3"
 
 # Mock data URL

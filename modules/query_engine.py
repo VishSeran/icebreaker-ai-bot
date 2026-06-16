@@ -31,20 +31,3 @@ def init_query_engine(index:VectorStoreIndex, llm_model):
         return None
 
   
-def answer_user_query(user_query:str, query_engine):
-    
-    try:
-        if not user_query:
-            raise ValueError("user query is empty or none")
-        
-        answer = query_engine.query(user_query)
-        logger.info("answer fetched sucessfull")
-        return answer
-    
-    except ValueError as e:
-        logger.error(f"Value error:{e}")
-        return None
-        
-    except Exception as e:
-        logger.error(f"Error while answering to user query: {e}")
-        return None

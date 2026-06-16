@@ -2,6 +2,7 @@ from modules.config import LLM_MODEL_ID, EMBEDDING_MODEL_ID
 from modules.logger import get_logger
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from transformers import pipeline, AutoTokenizer
 
 logger = get_logger("model_config_logger")
 
@@ -30,13 +31,22 @@ def init_llm_model(model_name: str = LLM_MODEL_ID):
     try:
         if not model_name:
             raise ValueError("model name is empty or none")
+        
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
 
         model = HuggingFaceLLM(
             model_name=model_name,
             context_window=4096,
             max_new_tokens=512,
-            generate_kwargs={"temperature": 0.7},
+            tokenizer=tokenizer,
+            generate_kwargs={
+                "temperature": 0.7,
+                "do_sample": True
+            }
         )
+        
+        if not model:
+            raise ValueError("Model is emty or none")
 
         logger.info("LLM model is lanuching!!!")
         return model
@@ -44,3 +54,6 @@ def init_llm_model(model_name: str = LLM_MODEL_ID):
     except ValueError as e:
         logger.error(f"value error: {e}")
         print(f"value error:{e}")
+        
+    except Exception as e:
+        logger.error(f"Unknown error: {e}")
