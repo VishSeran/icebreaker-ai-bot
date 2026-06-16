@@ -1,6 +1,6 @@
 from modules.models_config import init_llm_model, embedding_model
 from modules.data_extraction import data_extraction
-from modules.config import MOCK_DATA_URL
+from modules.data_preprocess import split_json_data, create_vector_database, verify_verctor_database
 from modules.logger import get_logger
 
 logger = get_logger("main_logger")
@@ -19,9 +19,23 @@ def process_linkedin(linedin_url, mock_use: bool, api_key: str):
         )
 
         if not profile_data:
-            raise ValueError("profile data not found")
+            raise ValueError("profile data are not found")
         
         logger.info("profile data fetched")
+        
+        nodes = split_json_data(profile_data)
+        
+        if not nodes:
+            raise ValueError("nodes are not found")
+        
+        logger.info("nodes created")
+        
+        index = create_vector_database(nodes)
+        
+        if not index:
+            raise ValueError("index are not founnd")
+        
+        logger.info("index are created")
         
 
     except ValueError as e:
