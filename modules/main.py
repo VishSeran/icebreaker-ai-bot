@@ -75,15 +75,16 @@ def process_linkedin(linkedin_url, api_key: str, mock_use: bool):
         
         query = "Provide three interesting facts about this person\'s career"
         response = query_engine.query(query)
+        logger.info(f"Response: {response}")
         return response
         
     except ValueError as e:
         logger.error(f"Value error: {e}")
-        return None
+        return f"ERROR: {str(e)}"
 
     except Exception as e:
         logger.error(f"Error while fetching process: {e}")
-        return None
+        return f"ERROR: {str(e)}"
     
 def answer_user_query(user_query:str):
     
