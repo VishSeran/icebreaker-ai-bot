@@ -12,7 +12,7 @@ import gradio as gr
 logger = get_logger("main_logger")
 global_query_engine = None
 
-def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
+def process_linkedin(linkedin_url, api_key: str, mock_use: bool):
     
     global global_query_engine
     try:
@@ -127,6 +127,23 @@ def gradio_interface():
                         type="password",
                         
                     )
+                    
+                    mock_use = gr.Checkbox(label="Use mock data",
+                                           value=True)
+                    
+                    process_btn = gr.Button("Process Profile")
+                
+                with gr.Column():
+                    result_txt = gr.Textbox(label="Initial Facts", lines=10)
+                
+                process_btn.click(
+                    fn=process_linkedin,
+                    inputs=[linkedin_url, api_key, mock_use],
+                    outputs=[result_txt]
+                )
+                    
+                    
+                    
             
     return demo  
         
