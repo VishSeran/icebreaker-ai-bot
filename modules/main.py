@@ -5,15 +5,16 @@ from modules.data_preprocess import (
     create_vector_database,
     verify_verctor_database,
 )
-from modules.query_engine import init_query_engine, answer_user_query
+from modules.query_engine import init_query_engine
 from modules.logger import get_logger
 import gradio as gr
 
 logger = get_logger("main_logger")
+global_query_engine = None
 
-
-def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str):
-
+def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
+    
+    global global_query_engine
     try:
         if mock_use or not api_key or not linkedin_url:
             linkedin_url = "https://www.linkedin.com/in/leonkatsnelson/"
@@ -69,19 +70,12 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str)
         if not query_engine:
             raise ValueError("Query engine is not found")
         
+        global_query_engine = query_engine
         logger.info("query engine created")
         
         query = "Provide three interesting facts about this person\'s career"
         response = query_engine.query(query)
-        print(response)
-        
-        answer = answer_user_query(user_query,query_engine)
-        if not answer:
-            raise ValueError("answer is not found")
-        
-        logger.info("answer fetched")
-        
-        return answer
+        return response
         
     except ValueError as e:
         logger.error(f"Value error: {e}")
@@ -91,13 +85,36 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str)
         logger.error(f"Error while fetching process: {e}")
         return None
     
+def answer_user_query(user_query:str):
+    
+    try:
+
+        if not user_query:
+            raise ValueError("user query is empty or none")
+        
+        if global_query_engine is None:
+            raise ValueError("System not initialized. Please load LinkedIn profile first.")
+        
+        answer = global_query_engine.query(user_query)
+        logger.info("answer fetched sucessfull")
+        return answer
+    
+    except ValueError as e:
+        logger.error(f"Value error:{e}")
+        return None
+        
+    except Exception as e:
+        logger.error(f"Error while answering to user query: {e}")
+        return None    
+    
 def gradio_interface():
     
     with gr.Blocks(title="LinedIn Icebraker Bot") as demo:
         
-        gr.Markdown("# LinkedIn Icebreaker bot")
+        gr.Markdown("# LinkedIn Icebreaker bot welconme")
         
-        # with gr.Tab("Process LinkedIn Profile"):
+        #with gr.Tab("Process LinkedIn Profile"):
+            
     return demo  
         
     
