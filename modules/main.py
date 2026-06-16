@@ -5,12 +5,14 @@ from modules.data_preprocess import (
     create_vector_database,
     verify_verctor_database,
 )
+from modules.query_engine import init_query_engine, answer_user_query
 from modules.logger import get_logger
+import gradio as gr
 
 logger = get_logger("main_logger")
 
 
-def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
+def process_linkedin(linkedin_url, mock_use: bool, api_key: str, user_query:str):
 
     try:
         if mock_use or not api_key or not linkedin_url:
@@ -61,9 +63,26 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
             logger.info("verification sucessfull")
         else:
             logger.warning("verification failed")
-            
-            
-
+        
+        query_engine = init_query_engine(index,llm_model)
+        
+        if not query_engine:
+            raise ValueError("Query engine is not found")
+        
+        logger.info("query engine created")
+        
+        query = "Provide three interesting facts about this person\'s career"
+        response = query_engine.query(query)
+        print(response)
+        
+        answer = answer_user_query(user_query,query_engine)
+        if not answer:
+            raise ValueError("answer is not found")
+        
+        logger.info("answer fetched")
+        
+        return answer
+        
     except ValueError as e:
         logger.error(f"Value error: {e}")
         return None
@@ -71,3 +90,18 @@ def process_linkedin(linkedin_url, mock_use: bool, api_key: str):
     except Exception as e:
         logger.error(f"Error while fetching process: {e}")
         return None
+    
+def gradio_interface():
+    
+    with gr.Blocks(title="LinedIn Icebraker Bot") as demo:
+        
+        gr.Markdown("# LinkedIn Icebreaker bot")
+        
+        # with gr.Tab("Process LinkedIn Profile"):
+    return demo  
+        
+    
+
+if __name__ == "__main__":
+    demo= gradio_interface()
+    demo.launch()
