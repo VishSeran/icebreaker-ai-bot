@@ -19,6 +19,9 @@ def llm_model(model_name:str=LLM_MODEL_ID):
             }
         )
         
+        logger.info("LLM model is lanuching!!!")
+        return model
+        
     
     except ValueError as e:
         logger.error(f"value error: {e}")

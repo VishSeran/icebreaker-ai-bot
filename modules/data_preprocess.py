@@ -44,10 +44,12 @@ def create_vector_database(nodes:list) -> Optional[VectorStoreIndex]:
         storage_context = StorageContext.from_defaults(
             vector_store=vector_store
         )
-        
+        if not EMBEDDING_MODEL_ID:
+            raise ValueError("Embedding model is not found")
         embed_model = HuggingFaceEmbedding(
             model=EMBEDDING_MODEL_ID
         )
+        logger.info("embeddig model is created")
         index = VectorStoreIndex(
             nodes=nodes,
             embed_model=embed_model,
@@ -56,6 +58,11 @@ def create_vector_database(nodes:list) -> Optional[VectorStoreIndex]:
         
         logger.info("Creating vector index and returned")
         return index
+    
+    except ValueError as e:
+        logger.error(f"Value error: {e}")
+        print(f"Value error: {e}")
+        return None
     except Exception as e:
         print(f"Unknown error: {e}")
         logger.error("an error while creating vector index")
